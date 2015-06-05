@@ -1,35 +1,10 @@
 from graphics import *
 from threading import Thread
 
-
-mouseCoords = []
-
 class Grid:
-    mouseThread = None
-    def __init__(self,start,end,rows,cols,color = 'black',win = None):
-        self.start = Point(start[0],start[1])
-        self.end = Point(end[0],end[1])
-        self.cols = cols
-        self.rows = rows
-        self.color = color
-        if(win is None):
-            self.win = GraphWin('Grid',1000,1000)
-            
-        else:
-            self.win = win
-       
-          
-    #    if(not Grid.mouseThread):
-     #         Grid.mouseThread = Thread(target = checkMouseClick,args = (self.win,))
     
-        self.bottomLeft = Point(self.start.getX(),self.end.getY())
-        self.topRight = Point(self.end.getX(),self.start.getY())
-        
-        
-        #self.mouse = []
-
-    def makeGrid(self):
-            '''
+    def __init__(self,start,end,rows,cols,color = 'black',win = None):
+        '''
             Makes a grid starting with the start point and ending with the end point in the window specified. The 
             grid consists of the rows and columns as specified in the arguments. The border color 
             of the grid is the color taken in the parameter. The default color is black.
@@ -44,6 +19,24 @@ class Grid:
             color : RGB value or a string of the name of the color.
             win : Instance of a window.
             '''
+        
+        self.start = Point(start[0],start[1])
+        self.end = Point(end[0],end[1])
+        self.cols = cols
+        self.rows = rows
+        self.color = color
+        if(win is None):
+            self.win = GraphWin('Grid',1000,1000)
+            
+        else:
+            self.win = win
+    
+        self.bottomLeft = Point(self.start.getX(),self.end.getY())
+        self.topRight = Point(self.end.getX(),self.start.getY())
+        
+       
+    def makeGrid(self):
+            
 
             topLine = Line(self.start,self.topRight)
             topLine.setOutline(self.color)
@@ -83,11 +76,6 @@ class Grid:
                 tempLine.draw(self.win)
                 #print(i)
             
-           
-       #     if(not Grid.mouseThread.isAlive()):
-        #         Grid.mouseThread.start()
-         #   return Grid.mouseThread
-           
 
     def globalMap(self,row,col):
             

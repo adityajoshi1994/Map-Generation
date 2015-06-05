@@ -1,7 +1,4 @@
 print('Hello World')
-
-#import simpleguitk 
-#from graphics import *
 from Grid import *
 
 win = GraphWin("Grid", 1000,1000)
