@@ -1,6 +1,11 @@
 from graphics import *
 from threading import Thread
+
+
+mouseCoords = []
+
 class Grid:
+    mouseThread = None
     def __init__(self,start,end,rows,cols,color = 'black',win = None):
         self.start = Point(start[0],start[1])
         self.end = Point(end[0],end[1])
@@ -8,17 +13,20 @@ class Grid:
         self.rows = rows
         self.color = color
         if(win is None):
-            self.win = GraphWin('Grid',300,400)
+            self.win = GraphWin('Grid',1000,1000)
+            
         else:
             self.win = win
-        self.win.setMouseHandler(self.binSearch)
-        
-
+       
+          
+    #    if(not Grid.mouseThread):
+     #         Grid.mouseThread = Thread(target = checkMouseClick,args = (self.win,))
+    
         self.bottomLeft = Point(self.start.getX(),self.end.getY())
         self.topRight = Point(self.end.getX(),self.start.getY())
         
-        self.mouseThread = Thread(target = self.checkMouseClick)
-        self.mouse = []
+        
+        #self.mouse = []
 
     def makeGrid(self):
             '''
@@ -74,9 +82,12 @@ class Grid:
                 tempLine.setOutline(self.color)
                 tempLine.draw(self.win)
                 #print(i)
-
-            self.mouseThread.start()
             
+           
+       #     if(not Grid.mouseThread.isAlive()):
+        #         Grid.mouseThread.start()
+         #   return Grid.mouseThread
+           
 
     def globalMap(self,row,col):
             
@@ -100,32 +111,46 @@ class Grid:
             tempRow2 = self.start.getY() * (1 - (float(row + 1)/float(self.rows))) + self.bottomLeft.getY() * (float(row + 1) / float(self.rows))
             tempCol2 = self.start.getX() * (1 - (float(col + 1)/float(self.cols))) + self.topRight.getX() * (float(col + 1) / float(self.cols))
             #print tempCol2,tempRow2
-            self.markCell(Point(tempCol1,tempRow1),Point(tempCol2,tempRow2),'x')
+            #self.markCell(Point(tempCol1,tempRow1),Point(tempCol2,tempRow2),'x')
             return [Point(tempCol1,tempRow1),Point(tempCol2,tempRow2)]
 
-    def markCell(self,point1,point2,textstr):
+    def markCell(self,point1,point2,textstr,color = 'red'):
         p = Point((point1.getX() + point2.getX())/2,(point1.getY() + point2.getY())/2)
-        print p.getX(),p.getY()
+        #print p.getX(),p.getY()
         text = Text(p,textstr)
-        text.setOutline('red')
+        text.setOutline(color)
         text.draw(self.win)
+        
+       
+    def getMapPoint(self,row,col):
+        tempRow1 = self.start.getY() * (1 - (float(row)/float(self.rows))) + self.bottomLeft.getY() * (float(row) / float(self.rows))
+        tempCol1 = self.start.getX() * (1 - (float(col)/float(self.cols))) + self.topRight.getX() * (float(col) / float(self.cols))
+        return Point(tempCol1,tempRow1)
 
+    def fillCell(self,row,col,color = 'white'):
+        templ = self.globalMap(row,col)
+        tempShape = Rectangle(templ[0],templ[1])
+        tempShape.setFill(color)
+        tempShape.draw(self.win)
+
+'''
+--------------------------------TRASH-------------------------------------------------------------TRASH----------------------------------
     def checkMouseClick(self):
-        '''
+        
         takes a list l and updates it with the point coordinates of the cell selected with the mouse
-        '''
+        
         print 'Thread started'
         
         while(True):
-            '''
+            
             p = self.win.getMouse()
             print p.getX(),p.getY()
             if(p):
                rowColList = self.binSearch(p.getX(),p.getY())
                self.mouse = self.globalMap(rowColList[0],rowColList[1])
                print self.mouse
-             '''
-            self.win._onClick(self.win.getMouse())
+             
+            self.win._onClick(self.win.checkMouse())
 
     def binSearch(self,point):
         begin = 0
@@ -163,8 +188,23 @@ class Grid:
         retList[1] = begin
         self.globalMap(retList[0],retList[1])
         #return retList
-               
-    def getMapPoint(self,row,col):
-        tempRow1 = self.start.getY() * (1 - (float(row)/float(self.rows))) + self.bottomLeft.getY() * (float(row) / float(self.rows))
-        tempCol1 = self.start.getX() * (1 - (float(col)/float(self.cols))) + self.topRight.getX() * (float(col) / float(self.cols))
-        return Point(tempCol1,tempRow1)
+         
+def checkMouseClick(win):       
+   
+    takes a list l and updates it with the point coordinates of the cell selected with the mouse
+        
+    print 'Thread started'
+        
+    while(True):    
+        p = win.getMouse()
+        print 'Inside while'
+        if(p):
+            print 'Inside whiles if'
+            print p.getX(),p.getY()
+        
+          mouseCoords = []
+          mouseCoords.append(p)
+          print mouseCoords
+        '''
+           
+        #self.win._onClick(self.win.checkMouse())
