@@ -33,8 +33,6 @@ class Grid:
     
         self.bottomLeft = Point(self.start.getX(),self.end.getY())
         self.topRight = Point(self.end.getX(),self.start.getY())
-        
-       
     def makeGrid(self):
             
 
