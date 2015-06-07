@@ -11,6 +11,9 @@ grid1 = Grid([50,300],[900,600],10,20,'red',win)
 grid1.makeGrid()
 grid2 = Grid([400,50],[600,200],3,3,'yellow',win)
 grid2.makeGrid()
+txt = Text(Point(500,250),'LOCAL MAP')
+txt.setOutline('red')
+txt.draw(win)
 l = grid2.globalMap(1,1)
 grid2.markCell(l[0],l[1],'yolo')
 
@@ -34,6 +37,8 @@ def setBot(row,col,color = 'blue'):
         return 0
     templ = grid1.globalMap(row,col)
     circ = Circle(Point((templ[0].getX() + templ[1].getX())/2,(templ[0].getY() + templ[1].getY())/2),5)
+    if(color == 'white'):
+        circ.setOutline('white')
     circ.setFill(color)
     circ.draw(win)
     #grid1.markCell(templ[0],templ[1],'O','yellow')
@@ -89,9 +94,9 @@ def moveBot():
         templ = botTransition(currentPosition,lastPosition)
         #setBot(templ[0],templ[1])
         updateLocalMap(templ[0],templ[1])
-        updateGlobalMap(currentPosition,templ)
         lastPosition = currentPosition
         currentPosition = templ
+        updateGlobalMap(lastPosition,currentPosition)
         time.sleep(1)
         #if(not enter):
          #   continue
@@ -125,45 +130,38 @@ def checkConstraints(x,y):
         return True
 
 def updateGlobalMap(lp,cp):
-    setBot(lp[0],lp[1],'black')
     colorSpace(cp)
+    setBot(lp[0],lp[1],'white')
     setBot(cp[0],cp[1])
 
 def colorSpace(cp,color = 'white'):
+    p = grid1.cellColorDict.get(str(cp[0])+':'+str(cp[1]))
+    if(not p):
+        grid1.fillCell(cp[0],cp[1])
+        #print (grid1.cellColorDict.get(str(cp[0])+':'+str(cp[1])).config['fill'] == 'white')
     for i in range(-1,2):
         for j in range(-1,2):
             if(i == 0 and j == 0):
                 continue
-           
-            p = Point(0,0)
-            p.setOutline('red')
-            p.draw(win)
-            print p.config['outline']
-            
-            print 
-            '''
-            if(color_rgb(Image(win).getPixel(templ[0].getX(),templ[1].getY())) == 'grey'):
-                templ2 = grid1.globalMap(cp[0] + i,cp[1] + j)
-                point = Point((templ2[0].getX() + templ2[1].getX())/2,(templ2[0].getY() + templ2[1].getY())/2)
-                if(color_rgb(Image(win).getPixel(point.getX(),point.getY())) == 'brown'):
-                    pass      
-                
+            x = cp[0] + i
+            y = cp[1] + j
+            if((x < 0 or y < 0) or ((x > grid1.rows - 1) or (y > grid1.cols - 1))):
+                continue
+            p = grid1.cellColorDict.get(str(x)+':'+str(y))
+            if(not p):
+                if(obstacleList.get(str(x)+':'+str(y))):
+                    grid1.fillCell(x,y,'green')
                 else:
-                    rect = Rectangle(templ2[0],templ2[1])
-                    rect.setFill('brown')
-                    rect.draw(win)
-            '''
-             
+                    grid1.fillCell(x,y)
 
-            #if(templ):
-             #   lm.append((i + 1,j + 1))
-               
+                                        
 setObstacles()
 #grid1.fillCell(2,3)
-updateLocalMap(3,3)
+#updateLocalMap(3,3)
+grid1.fillCell(0,0)
 setBot(0,0)
-#moveBot()
-print win.items
+moveBot()
+#print win.items
 
 '''
 -------------------------------TRASH-----------------------------------------------------------TRASH----------------------------

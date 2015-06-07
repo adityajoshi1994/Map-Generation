@@ -33,6 +33,8 @@ class Grid:
     
         self.bottomLeft = Point(self.start.getX(),self.end.getY())
         self.topRight = Point(self.end.getX(),self.start.getY())
+        self.cellColorDict = {}
+
     def makeGrid(self):
             
 
@@ -118,6 +120,7 @@ class Grid:
         tempShape = Rectangle(templ[0],templ[1])
         tempShape.setFill(color)
         tempShape.draw(self.win)
+        self.cellColorDict[str(row)+':'+str(col)] = tempShape
 
 '''
 --------------------------------TRASH-------------------------------------------------------------TRASH----------------------------------
